@@ -10,7 +10,7 @@ const GameMain = () => {
                 </div> */}
                 <div style={{ position: 'relative', height: '100%' }}>
                     {/* <GameComponent /> */}
-                    <GameComponent2/>
+                    <GameComponent2 />
                 </div>
             </div>
         </section>

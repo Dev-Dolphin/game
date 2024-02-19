@@ -15,9 +15,9 @@ const GameComponent2 = () => {
             height: gameContainer.offsetHeight,
             backgroundColor: '#3498db',
             physics: {
-                default: 'matter',
-                matter: {
-                    gravity: { y: 0 },
+                default: 'arcade',
+                arcade: {
+                    gravity: { y: 100 },
                     debug: false,
                 },
             },
@@ -36,41 +36,32 @@ const GameComponent2 = () => {
 
         function preload() {
             this.load.image('ball', '1.png');
-            this.load.image('pheu', 'pheu.png')
         }
 
         function create() {
+            console.log('chay vao', this)
 
-            balls = [];
-            // Tạo nhiều quả bóng
-            for (let i = 0; i < 10; i++) {
-                const ball = this.matter?.add.image(Phaser.Math.Between(100, 100), 300, 'ball');
-                ball?.setCircle();
-                ball?.setFriction(0.2);
-                ball?.setBounce(0.8);
-                balls?.push(ball);
+            balls = this.physics?.add.group();
+
+            // Create multiple balls and add them to the group
+            for (var i = 0; i < 5; i++) {
+                var ball = this.physics?.add.image(100 + i * 150, 100, 'ball').setDamping(true);
+                ball?.setCollideWorldBounds(true);
+                ball?.setBounce(0.7);
+                ball?.setVelocity(1, 100);
+
+                balls?.add(ball); // Add each ball to the group
             }
-        console.log('balls', balls)
-            // Sự kiện thổi khi nhấn nút chuột
-            this.input.on('pointerdown', function (pointer) {
-                const pointerAngle = Phaser.Math.Angle.BetweenPoints(pointer.position, { x: 400, y: 300 });
-                const force = 0.01; // Độ mạnh của lực thổi
-        
-                balls.children.iterate(function (ball) {
-                    const ballAngle = Phaser.Math.Angle.BetweenPoints(ball, pointer.position);
-                    const angleDifference = pointerAngle - ballAngle;
-                    const distance = Phaser.Math.Distance.Between(ball.x, ball.y, pointer.x, pointer.y);
-        
-                    // Áp dụng lực dựa trên góc và khoảng cách
-                    ball.applyForce({
-                        x: force * Math.cos(angleDifference) * distance,
-                        y: force * Math.sin(angleDifference) * distance
-                    });
-                });
+
+            // Handle collisions within the group
+            this.physics?.add.collider(balls, this.physics?.world.bounds, function (ball) {
+                ball?.setVelocity(0, 0);
+                ball?.setAcceleration(0, 0);
+                ball?.setBounce(0);
             });
-        
+
         }
-      
+
         function hitFunnel() {
             console.log('chay')
             game.pause()
@@ -82,17 +73,10 @@ const GameComponent2 = () => {
         // gameRef.current.moveBalls = moveBalls
         return () => game.destroy(); // Cleanup when component unmounts
     }, []);
-    const callPhaserFunction = () => {
-        if (gameRef?.current) {
-            gameRef?.current?.moveBalls();
-            console.log(gameRef)
-        }
-    }
     return (
         <>
             <div id='game-container'>
             </div>
-            <button onClick={callPhaserFunction}>Move Balls</button>
         </>
 
 

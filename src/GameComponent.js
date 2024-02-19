@@ -44,7 +44,8 @@ const GameComponent = () => {
             funnel.setScale(0.05)
             balls = this.physics.add.group({
                 key: 'ball',
-                repeat: 55,
+                repeat: 5,
+                collideWorldBounds: true,
                 setXY: { x: 30, y: 200, stepX: 50 }
             });
 
@@ -66,19 +67,23 @@ const GameComponent = () => {
 
 
             // hiệu ứng thôi bóng
-            balls.children.iterate(function (balloon) { 
+            balls.children.iterate(function (balloon) {
                 balloon.setInteractive({ draggable: true });
                 balloon.body.setAllowGravity(true);
                 balloon.displayWidth = 20; // Đặt chiều rộng mong muốn (ví dụ: 20 pixel)
                 balloon.displayHeight = 20;
-                balloon.setCircle();
-                balloon.setVelocity(0, 200);
-                balloon.setFriction(0.005).setBounce(1);
+                // balloon.setBounce(1)
+                balloon.setCircle(45);
+                balloon.setVelocity(0, 200).setDamping(true);
+                // balloon.setFriction(0.005).setBounce(1);
                 balloon.setCollideWorldBounds(true);
-                balloon.setBounce(Phaser.Math.FloatBetween(0.1, 0.4));
+                // balloon.setBounce(Phaser.Math.FloatBetween(0.1, 0.4));
                 balloon.setAngularVelocity(Phaser.Math.Between(-100, 100));
             })
-            this.physics.add.collider(balls, balls, () => { console.log('va nhau') });
+            this.physics.add.collider(balls, balls, () => { });
+
+            // this.physics.add.image(400, 100, 'ball').setScale(0.5);
+
 
 
         }
