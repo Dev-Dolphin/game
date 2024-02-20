@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import Phaser from 'phaser';
 import './App.css'
 import { IonPhaser } from '@ion-phaser/react';
-const GameComponent = () => {
+const GameComponent3 = () => {
     const gameRef = useRef(null);
 
     useEffect(() => {
@@ -33,7 +33,6 @@ const GameComponent = () => {
         var balls;
         var luckyBall;
         var funnel;
-        var ballContainer;
 
         function preload() {
             this.load.image('ball', '1.png');
@@ -41,31 +40,47 @@ const GameComponent = () => {
         }
 
         function create() {
-            funnel = this.physics.add.image(300, 50, 'pheu');
+            balls = this.add.group(); 
+            funnel = this.add.image(300, 50, 'pheu');
             funnel.setScale(0.05)
-            balls = this.physics.add.group({
-                key: 'ball',
-                repeat: 5,
-                collideWorldBounds: true,
-                setXY: { x: 30, y: 200, stepX: 50 }
+            for (let i = 0; i < 10; i++) {
+                let ball = this.physics.add.sprite(100 + i , 100, 'ball');
+                ball.setBounce(0.5);
+                ball.setVelocity(Phaser.Math.FloatBetween(-100, 200), Phaser.Math.FloatBetween(-200, 200));
+                ball.setCollideWorldBounds(true);
+                ball.setAngularVelocity(Phaser.Math.Between(-100, 100));
+                
+                balls.add(ball);
+            }
+            this.physics.world.on('worldbounds', function (body) {
+                let ball = body.gameObject;
+                if (balls.includes(ball)) {
+                    ball.setGravityY(ball.body.velocity.y * -0.2);
+                    ball.setCollideWorldBounds(false);
+                }
             });
+        
 
             // balls.children.iterate(function (ball) {
-            //     ball.setBounce(0.7);
+            //     ball.setBounce(0.6);
+            //     // ball.setVelocity(0, 200).setDamping(true);
+            //     ball.setGravityY(ball.body.velocity.y * -0.2);
+            //     ball.setAngularVelocity(Phaser.Math.Between(-100, 100));
             // });
             
             // this.physics.world.enable(balls, Phaser.Physics.Arcade.STATIC_BODY);
             // this.physics.add.collider(balls, balls);
 
-            balls.children.iterate(function (ball) {
-                ball.displayWidth = 100; // Đặt chiều rộng mong muốn (ví dụ: 50 pixel)
-                ball.displayHeight = 100;
-                ball.setBounce(1);
-                ball.setVelocity(Phaser.Math.FloatBetween(-100, 200), Phaser.Math.FloatBetween(-200, 200));
-                ball.setCollideWorldBounds(true);
-            });
-            this.physics.add.collider(balls, balls, () => { console.log('va nhau') });
-            this.physics.add.overlap(balls, funnel, hitFunnel, null, this);
+            // balls.children.iterate(function (ball) {
+            //     ball.displayWidth = 20; // Đặt chiều rộng mong muốn (ví dụ: 50 pixel)
+            //     ball.displayHeight = 20;
+            //     ball.setBounce(1);
+            //     ball.setVelocity(Phaser.Math.FloatBetween(-100, 200), Phaser.Math.FloatBetween(-200, 200));
+            //     ball.setCollideWorldBounds(true);
+            // });
+            this.physics.add.collider(balls, balls, () => {  });
+            this.physics.add.existing(balls);
+            // this.physics.add.overlap(balls, funnel, hitFunnel, null, this);
 
 
             // hiệu ứng thôi bóng
@@ -89,52 +104,37 @@ const GameComponent = () => {
 
 
         }
-        // function moveBalls() {
-        //     balls.children.iterate(function (ball) {
-        //         ball.body.setAllowGravity(true);
-        //         // ball.setVelocityY(100)
-        //         ball.setBounce(1);
-        //         ball.setCollideWorldBounds(true);
-        //         ball.body.setVelocity(100, 200);
-        //     });
-        //     this?.tweens?.add({
-        //         targets: balls.getChildren(),
-        //         x: '+=50',
-        //         y: '+=50',
-        //         duration: 2000,
-        //         ease: 'Power2',
-        //         yoyo: true,
-        //         repeat: -1,
-        //     });
-
-        // }
+        function moveBalls() {
+                balls.children.iterate(function (ball, index) {
+                    ball.body.setAllowGravity(true);
+                    // ball.setVelocityY(100)
+                    ball.setBounce(1);
+                    ball.setCollideWorldBounds(true);
+                    ball.body.setVelocity(100 + index, 200 + index *3);
+                });
+                this?.tweens?.add({
+                    targets: balls.getChildren(),
+                    x: '+=50',
+                    y: '+=50',
+                    duration: 2000,
+                    ease: 'Power2',
+                    yoyo: true,
+                    repeat: -1,
+                });  
+        }
 
         function hitFunnel() {
             console.log('chay')
             game.pause()
         }
         function update() {
-            // balls.children.iterate(function (ball) {
-            //     if (ball.x < 0) {
-            //         ball.setVelocityX(Phaser.Math.FloatBetween(50, 200));
-            //     } else if (ball.x > 800) {
-            //         ball.setVelocityX(Phaser.Math.FloatBetween(-200, -50));
-            //     }
-
-            //     if (ball.y < 0) {
-            //         ball.setVelocityY(Phaser.Math.FloatBetween(50, 200));
-            //     } else if (ball.y > 600) {
-            //         ball.setVelocityY(Phaser.Math.FloatBetween(-200, -50));
-            //     }
-            // });
-            // Add any additional update logic here
+           
         }
         gameRef.current = game
-        // gameRef.current.moveBalls = moveBalls
+        gameRef.current.moveBalls = moveBalls
         return () => game.destroy(); // Cleanup when component unmounts
     }, []);
     const callPhaserFunction = () => {
-
         if (gameRef?.current) {
             gameRef?.current?.moveBalls();
             console.log(gameRef)
@@ -151,4 +151,4 @@ const GameComponent = () => {
     );
 };
 
-export default GameComponent;
+export default GameComponent3;

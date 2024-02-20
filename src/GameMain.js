@@ -1,5 +1,6 @@
 import GameComponent from "./GameComponent"
 import GameComponent2 from "./GameComponent2"
+import GameComponent3 from "./GameComponent3"
 
 const GameMain = () => {
     return (
@@ -10,7 +11,7 @@ const GameMain = () => {
                 </div> */}
                 <div style={{ position: 'relative', height: '100%' }}>
                     {/* <GameComponent /> */}
-                    <GameComponent2 />
+                    <GameComponent3 />
                 </div>
             </div>
         </section>
