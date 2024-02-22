@@ -19,7 +19,7 @@ const GameComponent3 = () => {
                 arcade: {
                     gravity: { y: 100 },
                     enableSleeping: true,
-                    debug: false,
+                    debug: true,
                 },
             },
             scene: {
@@ -35,7 +35,7 @@ const GameComponent3 = () => {
         var funnel;
 
         function preload() {
-            this.load.image('ball', '1.png');
+            this.load.image('ball', '2.png');
             this.load.image('pheu', 'pheu.png')
         }
 
@@ -44,19 +44,23 @@ const GameComponent3 = () => {
             funnel = this.add.image(300, 50, 'pheu');
             funnel.setScale(0.05)
             for (let i = 0; i < 10; i++) {
-                let ball = this.physics.add.sprite(100 + i , 100, 'ball');
+                let ball = this.physics.add.sprite(100 + i, 100, 'ball');
+                // ball.setCircle(60)
                 ball.setBounce(0.5);
                 ball.setVelocity(Phaser.Math.FloatBetween(-100, 200), Phaser.Math.FloatBetween(-200, 200));
-                ball.setCollideWorldBounds(true);
                 ball.setAngularVelocity(Phaser.Math.Between(-100, 100));
-                
+                ball.setCollideWorldBounds(true);
+                ball.setScale(0.5)
                 balls.add(ball);
             }
             this.physics.world.on('worldbounds', function (body) {
                 let ball = body.gameObject;
                 if (balls.includes(ball)) {
                     ball.setGravityY(ball.body.velocity.y * -0.2);
-                    ball.setCollideWorldBounds(false);
+                      ball.setAngularVelocity(Phaser.Math.Between(-100, 100));
+
+                    // ball.setFriction(100,100)
+                    // ball.setCollideWorldBounds(false);
                 }
             });
         
