@@ -9,7 +9,7 @@ function App() {
     <div id='canvas'>
       <h1>React Phaser Game</h1>
       {/* <GameComponent /> */}
-      <GameMain2 />
+      <GameMain />
       {/* <MatterJs/> */}
     </div>
   );
