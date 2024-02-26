@@ -9,7 +9,7 @@ const GameMain = () => {
                 {/* <div>
                     <img src='../pngegg.png' width='50px' height='50px' />
                 </div> */}
-                <div style={{ position: 'relative', height: '100%' }}>
+                <div className="tuanvu" style={{ position: 'relative', height: '100%' }}>
                     {/* <GameComponent /> */}
                     <GameComponent3 />
                 </div>

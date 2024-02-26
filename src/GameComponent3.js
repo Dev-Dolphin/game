@@ -7,18 +7,19 @@ const GameComponent3 = () => {
 
     useEffect(() => {
         const gameContainer = document.getElementById('game-container');
-
+        console.log("gameContainer.offsetWidth", gameContainer.offsetWidth)
         const config = {
             type: Phaser.AUTO,
             parent: 'game-container',
             width: gameContainer.offsetWidth,
             height: gameContainer.offsetHeight,
-            backgroundColor: '#3498db',
+            // backgroundColor: 'transparent',
+            transparent: true,
             physics: {
                 default: 'arcade',
                 arcade: {
-                    gravity: { y: 500 },
-                    enableSleeping: true,
+                    gravity: { y: 200 },
+                    // enableSleeping: true,
                     // debug: true,
                 },
             },
@@ -39,7 +40,7 @@ const GameComponent3 = () => {
             this.load.image('pheu', 'pheu.png')
         }
         let thisfake
-
+        
         function create() {
             thisfake = this
             balls = this.add.group(); 
@@ -49,20 +50,22 @@ const GameComponent3 = () => {
                 let ball = this.physics.add.sprite(100 + i, 100, 'ball');
                 // ball.setCircle(60)
                 ball.setBounce(0.5);
-                ball.setVelocity(Phaser.Math.FloatBetween(-100, 200), Phaser.Math.FloatBetween(-200, 200));
+                ball.setVelocity(Phaser.Math.FloatBetween(-100, 200), Phaser.Math.FloatBetween(-200, 200)).setDamping(true);
+                setTimeout(function(ball) {
+                    ball.setVelocity(0, 0);
+                  }, 15000, ball);
                 // ball.setAngularVelocity(Phaser.Math.Between(-100, 100));
                 ball.setCollideWorldBounds(true);
                 ball.setScale(0.5)
                 balls.add(ball);
-
                 // time 
-                
             }
 
             this.physics.world.on('worldbounds', function (body) {
+                console.log('caty')
                 let ball = body.gameObject;
                 if (balls.includes(ball)) {
-                    // ball.setGravityY(ball.body.velocity.y * -0.2);
+                        ball.setCircle(60)
                       ball.setAngularVelocity(Phaser.Math.Between(-100, 100));
                     // ball.setFriction(100,100)
                     // ball.setCollideWorldBounds(false);
@@ -70,6 +73,8 @@ const GameComponent3 = () => {
                 }
             });
             this.physics.add.existing(balls);
+            // this.physics.add.collider(balls, balls, () => { });
+
             // this.physics.add.overlap(balls, funnel, hitFunnel, null, this);
 
 
@@ -87,7 +92,6 @@ const GameComponent3 = () => {
             //     // balloon.setBounce(Phaser.Math.FloatBetween(0.1, 0.4));
             //     balloon.setAngularVelocity(Phaser.Math.Between(-100, 100));
             // })
-            // this.physics.add.collider(balls, balls, () => { });
 
             // this.physics.add.image(400, 100, 'ball').setScale(0.5);
 
@@ -104,10 +108,11 @@ const GameComponent3 = () => {
                     ball.body.setVelocity( Phaser.Math.FloatBetween(-100, 400) * 2, Phaser.Math.FloatBetween(-100, 400) * 4).setDamping(true);
                 });
             // thisfake.physics.add.collider(balls, balls, () => { });
-            thisfake.physics.add.collider(balls, funnel, () => {  });
-            // setTimeout(() => {
-            //     game.pause()
-            // }, 2000)
+            thisfake.physics.add.collider(balls, funnel, () => { 
+                setTimeout(() => {
+                    game.pause()
+                }, 2000)
+              });
         }
 
         function hitFunnel() {

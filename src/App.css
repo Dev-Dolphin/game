@@ -37,6 +37,14 @@
   }
 }
 #game-container{
-  width: 100%;
+  width: 400px;
+  height: 600px;
+  border-radius: 50px;
+  background-color: white;
+  margin: 20px;
+}
+.tuanvu {
+  background-color: #61dafb;
   height: 100%;
+  width: 100%;
 }
